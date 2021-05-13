@@ -37,7 +37,6 @@ class Utility
         return processName      
     end
 
-
     def self.getUserID
         Process.uid
     end
