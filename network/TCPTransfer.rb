@@ -1,3 +1,5 @@
+require_relative 'NetworkTransfer'
+
 class TCPTransfer < NetworkTransfer
 
     def setupTransfer

@@ -1,4 +1,6 @@
-class HTTPTransfer.rb < NetworkTransfer
+require_relative 'NetworkTransfer'
+
+class HTTPTransfer < NetworkTransfer
 
     def setupTransfer
 
