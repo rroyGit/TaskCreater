@@ -2,6 +2,7 @@
 A Ruby CLI that allows new process creation, file i/o operations, and network data transfer. Each task operation is logged - logged data is inserted into a JSON file. Common logged data includes the Process Name, Process ID, User Name, Command-Line Arguments, and Start Time.
 
 Usage:
+
 Choose one of the following options [1-5]:
 
         1. |Start Process| [path to executable] [optional command-line arguments]
@@ -16,7 +17,13 @@ Choose one of the following options [1-5]:
 
             The above will send the data using the TCP protocol. HTTP protocol is used when the fifth option is used with an URI string, like in the last example.
 Examples:
-    ruby TaskCreator.rb 1 /home/user/src/hello_world
+
+    ruby TaskCreator.rb 1 /bin/cat /etc/hosts
+
+    ruby TaskCreator.rb 1 "C:\Program Files\Git\bin\git.exe" --version
+        
+        On Windows, the path to the executable and its argument(s) look like this: "C:\Program Files\Git\bin\git.exe" --version
+        The open/close quotation marks are critical for a dir name that has a white-space character
 
     ruby TaskCreator.rb 2 /home/user/src/ hello_world.txt
 
