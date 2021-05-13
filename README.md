@@ -1,4 +1,4 @@
-# TaskCreater
+# TaskCreator
 A Ruby CLI that allows new process creation, file i/o operations, and network data transfer. Each task operation is logged - logged data is inserted into a JSON file. Common logged data includes the Process Name, Process ID, User Name, Command-Line Arguments, and Start Time.
 
 Usage:
