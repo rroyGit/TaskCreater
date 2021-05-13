@@ -2,6 +2,7 @@ require_relative 'tools/FileIO'
 require_relative 'tools/Utility'
 require_relative 'network/HTTPTransfer'
 require_relative 'network/TCPTransfer'
+require_relative 'tools/JSONLogger'
 
 def usage
     startProccess = "1. |Start Process|"
@@ -51,6 +52,9 @@ def startProcess exePath, exeArguments
 
         processHash = {start_time: start_time_.inspect, user_name: user_name_, process_name: process_name_, 
         process_command_args: process_command_args_, process_id: process_id_}
+
+        JSONLogger.getJSONLogger.addData "startProcess", processHash
+        JSONLogger.getJSONLogger.writeData
     end
 end
 
@@ -120,7 +124,8 @@ def mainHandler
     end
        
     userOption, *arguments = commandArgs
-   
+    JSONLogger.getJSONLogger.loadDataHash
+
     case userOption.to_i
     when 1
         handleStartProcess arguments
