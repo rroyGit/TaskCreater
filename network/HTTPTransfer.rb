@@ -2,6 +2,12 @@ require 'net/http'
 require_relative 'NetworkTransfer'
 
 class HTTPTransfer < NetworkTransfer
+
+    def initialize arguments
+        desUri, = arguments
+        @desUri = desUri
+    end
+
     def setupTransfer
         @type = "HTTP Protocol"
         @host_ = HTTPTransfer.getHost(@desUri)
@@ -16,6 +22,7 @@ class HTTPTransfer < NetworkTransfer
     end
 
     def sendAndWaitData
+        puts "Sending and waiting for data..."
         httpResponseObj = Net::HTTP.get_response(@uri)
         puts "Response: #{httpResponseObj.body}"
     end

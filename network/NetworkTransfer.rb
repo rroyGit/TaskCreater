@@ -9,14 +9,7 @@ class NetworkTransfer
 
     @commandArgs = []
 
-    def initialize desAddr, desPort, userData
-        @desAddr = desAddr
-        @desPort = desPort
-        @userData = userData
-    end
-
-    def initialize desUri
-        @desUri = desUri
+    def initialize
     end
 
     def transferData
