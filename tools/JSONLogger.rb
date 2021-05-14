@@ -31,11 +31,11 @@ class JSONLogger
     private
     def initialize
 
-        dirPath = FileIO.fixateDirPath(Dir.pwd)
+        dirPath = FileIO.fixatePath(Dir.pwd)
         @currentDirPath = "#{dirPath}tools"
         @fileName = "JSONLogger.json"
 
-        @filePath = "#{FileIO.fixateDirPath(@currentDirPath)}#{@fileName}"
+        @filePath = "#{FileIO.fixatePath(@currentDirPath)}#{@fileName}"
         
         if not File::exists? (@filePath)
             File.new(@filePath, "w")

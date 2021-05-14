@@ -15,6 +15,9 @@ class Utility
         Process.pid
     end
 
+    # Processes created via fork have their process name set to ruby.
+    # This name is not well-defined. In the future, it would be ideal
+    # to appropriately update the name of the process via a Ruby API.
     def self.getProcessNameByPID processPid
         processName = nil
         if OSFinder.linux?
@@ -25,8 +28,9 @@ class Utility
         return processName.strip
     end
 
-    #Used when a process has finished execution because it can
-    #not be found in the OS process table
+    # When a process has finished execution, the process entry no longer exists
+    # in the OS process table. Thus, retrieve the executable name from the path
+    # pointing to the executable. 
     def self.getProcessNameByPath exePath
         processName = nil
         if OSFinder.linux?
