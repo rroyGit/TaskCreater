@@ -1,7 +1,7 @@
 require_relative 'tools/FileIO'
-require_relative 'tools/Utility'
 require_relative 'tools/ProcessStart'
 require_relative 'tools/JSONLogger'
+require_relative 'network/NetworkTransfer'
 require_relative 'network/HTTPTransfer'
 require_relative 'network/TCPTransfer'
 
@@ -46,36 +46,52 @@ def handleStartProcess arguments
 end
 
 def handleCreateFile arguments
-    
+    if arguments != nil && arguments.length == 2
+        fileLocation, fileName = arguments
+        FileIO.commandArgs = arguments
+        FileIO.createFile fileLocation, fileName
+    else
+        invalidInput
+    end 
 end
 
 def handleDeleteFile arguments
-    
+    if arguments != nil && arguments.length == 1
+        fileName, = arguments
+        FileIO.commandArgs = arguments
+        FileIO.deleteFile fileName
+    else
+        invalidInput
+    end 
 end
 
 def handleModifyFile arguments
-   
+    if arguments != nil && arguments.length == 2
+        fileName, userData = arguments
+        FileIO.commandArgs = arguments
+        FileIO.writeToFile fileName, userData
+    else
+        invalidInput
+    end 
 end
 
+# Determine and perform transfer of data via either TCP or
+# HTTP protocol. If command-line args include an address, a port,
+# a string of chars, then TCP wil be used. Otherwise, if it includes 
+# an URI then HTTP will be used - currently supports GET requests. 
 def handleNetworkTransfer arguments
     if arguments != nil
         NetworkTransfer.commandArgs = arguments
-        if arguments.length == 3
-            destinationAddr, destinationPort, userData = arguments
-            dataTransfer = TCPTransfer.new(destinationAddr, destinationPort, userData)
-        elsif arguments.length == 1 
-            destinationUri, = arguments
-            dataTransfer = HTTPTransfer.new(destinationUri)
-        else 
-            invalidInput
-            return
-        end
+
+        dataTransfer = HTTPTransfer.new(arguments) if arguments.length == 1
+        dataTransfer = TCPTransfer.new(arguments) if arguments.length == 3
         dataTransfer.transferData if not dataTransfer == nil
     else
         invalidInput
     end 
 end
 
+# Process command-line args and trigger appropriate action 
 def mainHandler
     commandArgs = ARGV
     if commandArgs.length == 0
