@@ -19,7 +19,8 @@ def usage
         #{modifyFile} [file path] [\"data to add - type String\"]\n
         #{transferData} [Destinaton address] [Destination port] [\"data to send - type String\"]\n"
     
-    examples = "Examples:\n    ruby Task_Maker.rb 1 /home/user/src/hello_world\n
+    examples = "Examples:\n    ruby TaskCreator.rb 1 /bin/cat /etc/hosts\n
+    ruby TaskCreator.rb 1 \"C:\\Program Files\\Git\\bin\\git.exe\" --version\n
     ruby TaskCreator.rb 2 /home/user/src/ hello_world.txt\n
     ruby TaskCreator.rb 3 /home/user/src/hello_world.txt\n
     ruby TaskCreator.rb 4 /home/user/src/hello_world.txt \"Hello There! General Kenobi\"\n
@@ -57,7 +58,22 @@ def handleModifyFile arguments
 end
 
 def handleNetworkTransfer arguments
-    
+    if arguments != nil
+        NetworkTransfer.commandArgs = arguments
+        if arguments.length == 3
+            destinationAddr, destinationPort, userData = arguments
+            dataTransfer = TCPTransfer.new(destinationAddr, destinationPort, userData)
+        elsif arguments.length == 1 
+            destinationUri, = arguments
+            dataTransfer = HTTPTransfer.new(destinationUri)
+        else 
+            invalidInput
+            return
+        end
+        dataTransfer.transferData if not dataTransfer == nil
+    else
+        invalidInput
+    end 
 end
 
 def mainHandler
