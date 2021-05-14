@@ -1,8 +1,9 @@
 require_relative 'tools/FileIO'
 require_relative 'tools/Utility'
+require_relative 'tools/ProcessStart'
+require_relative 'tools/JSONLogger'
 require_relative 'network/HTTPTransfer'
 require_relative 'network/TCPTransfer'
-require_relative 'tools/JSONLogger'
 
 def usage
     startProccess = "1. |Start Process|"
@@ -33,68 +34,11 @@ def invalidInput
     usage 
 end
 
-#core feature - create a new process wherein the specified executable runs
-def startProcess exePath, exeArguments
-    require 'open3'
- 
-    if (FileIO.validateFile? exePath) && (FileIO.validateExe? exePath)
-        exeArgumentsString = (exeArguments ==  nil) ? "" : exeArguments.join(" ")
-
-        start_time_ = Time.new
-
-        process_id_ = executeLinux exePath, exeArgumentsString if OSFinder.linux?
-        process_id_ = executeWin exePath, exeArgumentsString if OSFinder.windows?
-            
-        #log data
-        process_command_args_ = exeArgumentsString
-        user_name_ = Utility.getUserName
-        process_name_ = Utility.getProcessNameByPath exePath
-
-        processHash = {start_time: start_time_.inspect, user_name: user_name_, process_name: process_name_, 
-        process_command_args: process_command_args_, process_id: process_id_}
-
-        JSONLogger.getJSONLogger.addData "startProcess", processHash
-        JSONLogger.getJSONLogger.writeData
-    end
-end
-
-def executeWin exePath, exeArgumentsString 
-    pid = nil
-    #   ruby TaskCreator.rb 1 "C:\\Program Files\\Git\\bin\\git.exe" --version
-    #   ruby TaskCreator.rb 1 "C:\Program Files\Git\bin\git.exe" --version
-    #   "\"C:\\Program Files\\Git\\bin\\git.exe\" --version"
-
-    fullCmd = "\"#{exePath}\" #{exeArgumentsString}"
-    Open3.popen3(fullCmd) do |stdin, stdout, stderr, wait_thread|
-        puts "stdout: \n#{stdout.read}"
-        puts "\n"
-        puts "stderr: \n#{stderr.read}"
-
-        pid = wait_thread.pid
-        exit_status = wait_thread.value #waits the termination of the process
-    end   
-    return pid
-end
-
-def executeLinux exePath, exeArgumentsString
-    stdin, stdout, stderr, wait_thread = Open3.popen3 exePath, exeArgumentsString
-    pid = wait_thread.pid # pid of the started process
-
-    stdin.close
-    exit_status = wait_thread.value #waits the termination of the process
-
-    puts "stdout: \n#{stdout.read}"
-    puts "\n"
-    puts "stderr: \n#{stderr.read}"
-    stdout.close
-    stderr.close
-    return pid
-end
-
+#action handlers
 def handleStartProcess arguments
     if arguments != nil && arguments.length >= 1
         exePath, *exeArguments = arguments
-        startProcess exePath, exeArguments
+        ProcessStart.startProcess exePath, exeArguments
     else
         invalidInput
     end
