@@ -18,11 +18,11 @@ class Utility
     def self.getProcessNameByPID processPid
         processName = nil
         if OSFinder.linux?
-            processName = `ls`
+            processName = `ps -p #{processPid} -o comm=`
         elsif OSFinder.windows?
             processName = `tasklist /FI "pid eq #{processPid}"`
         end    
-        return processName
+        return processName.strip
     end
 
     #Used when a process has finished execution because it can
@@ -34,7 +34,7 @@ class Utility
         elsif OSFinder.windows?
             processName = exePath.split("\\")[-1]
         end  
-        return processName      
+        return processName.strip      
     end
 
     def self.getUserID
