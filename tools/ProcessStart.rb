@@ -11,7 +11,7 @@ class ProcessStart
 
             start_time_ = Time.new
 
-            process_id_ = ProcessStart.executeLinux exePath, exeArgumentsString if OSFinder.linux?
+            process_id_ = ProcessStart.executeUnix exePath, exeArgumentsString if OSFinder.unix?
             process_id_ = ProcessStart.executeWin exePath, exeArgumentsString if OSFinder.windows?
                 
             #log data
@@ -46,7 +46,7 @@ class ProcessStart
         return pid
     end
 
-    def self.executeLinux exePath, exeArgumentsString
+    def self.executeUnix exePath, exeArgumentsString
         stdin, stdout, stderr, wait_thread = Open3.popen3 exePath, exeArgumentsString
         pid = wait_thread.pid # pid of the started process
 

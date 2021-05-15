@@ -112,7 +112,7 @@ class FileIO
     # Add a forward or backward slash to the end of the received
     # string depending on OS type
     def self.fixatePath path_
-        if OSFinder.linux?
+        if OSFinder.linux? or OSFinder.mac?
             if not path_.end_with? ("/")
                return "#{path_}".concat("/")
             end

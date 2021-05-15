@@ -3,12 +3,12 @@ require_relative 'OSFinder'
 class Utility
     
     def self.pathExample
-        puts "/home/<USER_NAME>/my_folder" if OSFinder.linux?
+        puts "/home/<USER_NAME>/my_folder" if OSFinder.unix?
         puts "C:\\Users\\<USER_NAME\\PC\\my_folder" if OSFinder.windows?
     end
 
     def self.systemSupported?
-        OSFinder.linux? or OSFinder.windows?
+        OSFinder.linux? or OSFinder.windows? or OSFinder.mac?
     end
 
     def self.getProcessID
@@ -19,12 +19,8 @@ class Utility
     # This name is not well-defined. In the future, it would be ideal
     # to appropriately update the name of the process via a Ruby API.
     def self.getProcessNameByPID processPid
-        processName = nil
-        if OSFinder.linux?
-            processName = `ps -p #{processPid} -o comm=`
-        elsif OSFinder.windows?
-            processName = `tasklist /FI "pid eq #{processPid}"`
-        end    
+        processName = `ps -p #{processPid} -o comm=` if OSFinder.unix?
+        processName = `tasklist /FI "pid eq #{processPid}"` if OSFinder.windows?
         return processName.strip
     end
 
@@ -32,12 +28,8 @@ class Utility
     # in the OS process table. Thus, retrieve the executable name from the path
     # pointing to the executable. 
     def self.getProcessNameByPath exePath
-        processName = nil
-        if OSFinder.linux?
-            processName = exePath.split("/")[-1]
-        elsif OSFinder.windows?
-            processName = exePath.split("\\")[-1]
-        end  
+        processName = exePath.split("/")[-1] if OSFinder.unix?
+        processName = exePath.split("\\")[-1] if OSFinder.windows?
         return processName.strip      
     end
 
