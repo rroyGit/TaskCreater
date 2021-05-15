@@ -1,0 +1,29 @@
+Task Creator is a Ruby CLI that performs File I/O operations (file creation/deletion/modification), run an executable 
+in a new procress, and establish network connection to transfer data via TCP and HTTP. The program performs JSON logging
+for each action, keeping record of common data like Process Name, Process ID, User Name, Command-Line Arguments, and Start Time.
+
+The program is Linux and Mac compatible. On Windows, due to the lack of the fork API, the program will need to run in a POSIX 
+compatible runtime enviornment like Cygwin to get the full functionality; the startProcess feature will work as it uses Process.spawn
+API internally which is Windows supported.
+
+Starting the program via "ruby TaskCreator.rb" will display the program's usage. The usage showcases the options available to the user
+as well as examples accompanying each feature. The program processes the command-line arguments to determine the requested action and the
+associated arguments that supplement the action. Each action occurs within a newly created process, thereby having a process id and name different from its
+parent. The process name is determined with the help of an external command and the process id; however, the process name is not as clearly identifiable as all
+child processes are labeled as "ruby." I noticed this when running the program on windows subsystem for linux (WSL). In a future iteration, I would change the 
+process name using the Process.setproctitle method to uniquely identify each child process. By design choice, the parent process will block until the child process 
+has finished its execution. This is because of the simple nature of the program. Also, to avoid orphan/zombie processes as the parent process is more likely to 
+finish prior to the child process. 
+
+Prior to the child process exiting, the telemetry data is logged in JSON format in the file called JSONLogging.json under the tools directory. The JSON structure 
+consists of three keys in the root object: fileIO, transferData, and startProcess. Each key points to an array of objects that contain the respective logged data. A JSON
+library is used to load the data into memory as a ruby hash. The hash is modified by key look-up with the latest data object placed at the end of the list. Finally, the 
+ruby hash is written to a json file, particularly via the library's pretty_generate method. In the future, I would refactor the logging code to follow the composition 
+pattern that would accept a log format (JSON, XML, etc) and the log level (DEBUG, ERROR, INFO, etc) while maintaining its singleton nature.
+
+The JSON structure (the keys' order follows the order of the user requested actions):
+#{
+# startProcess (key) : [{}...{}]
+# fileIO (key) : [{}...{}]
+# transferData (key) : [{}...{}]
+#}
